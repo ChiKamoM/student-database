@@ -1,0 +1,36 @@
+body{
+      background-color: #f5f1f1;
+}
+
+
+.options-container, .details-modal, .new-student-modal, .edit-student-modal, .confirmation-modal {
+      border: solid 1px black;
+      background-color: white;
+}
+.head {
+      border-bottom: 1px solid black;
+}
+.row1 {
+      border-top: 1px solid;
+}
+form {
+      border: none;
+}
+
+.student-table{
+      width: 90%;
+      border: 1px solid black;
+      margin: auto;
+}
+.row{
+      display: grid;
+      grid-template-columns:80px 110px 160px auto;
+      border: 1px solid black;
+}
+.row div {
+      border-left: 1px solid black;
+}
+
+.hidden{
+      display:none ;
+}

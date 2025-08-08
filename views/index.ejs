@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="main.css">
+      <title>Studnet database</title>
+</head>
+<body>
+
+      
+ <div class="options-container">
+
+      <div class="head">
+            <h2>Student Management</h2> 
+            <button class="new-student">Add New Student</button>
+      </div>
+      <form action="/search" class="search">
+            <input type="text" class="search-bar">
+      </form>
+      <div class="student-table">
+            
+            <div class="row">
+                  <div class="id-col">
+                        <p>iD</p>
+                  </div>
+
+                  <div class="name-col">
+                        <p>Name</p>
+                  </div>
+
+                  <div class="email-col">
+                        <p>Email</p>
+                  </div>
+
+                  <div class="actions-col">
+                        <p>Actions</p>
+                  </div>                 
+            </div>
+            <% students.forEach(student => { %>
+                  <div class="row">
+                        <div class="id">
+                              <%= student.id %>
+                        </div>
+                        <div class="name">
+                              <%= student.name %>
+                        </div>
+                        <div class="email">
+                              <%= student.email %>
+                        </div>
+                        <div method="post" class="actions">
+                              <button id="view<%=student.id%>" class="details" 
+                                   
+                              data-name="<%= student.name %>" 
+                              data-email="<%= student.email %>"
+                              data-phone=" <%= student.phone %>"
+                              data-id="<%= student.id %>"
+                              data-dob=" <%= student.id %>">
+                              
+                                    View
+                              </button>
+                              <button id="edit"  class="action">
+                                    Edit
+                              </button>
+                              <button id="delete"  class="action">
+                                    Delete
+                              </button>
+                        </form>
+                  </div>
+            <% }) %>
+      </div>      
+      
+ </div>
+
+
+ <div class="modal-container" id="details">
+      <div class="details-modal">
+            <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
+          <div class="student-details">
+            
+             <ul>
+                  <li><span>ID:</span><span class="span-container" id="id"></span></li>
+                  <li><span>Name:</span> <span class="span-container" id="name"></span> </li>
+                  <li><span>Email:</span> <span class="span-container" id="email"></span> </li>
+                  <li><span>Phone:</span> <span class="span-container" id="phone"></span> </li>
+                  <li><span>DOB:</span> <span class="span-container" id="dob"></span> </li>
+             </ul>
+       </div>
+      </div>
+
+ </div>
+
+ <div class="modal-container hidden" id="new-student">
+      <div class="new-student-modal">
+            <h2>Add New Student</h2>
+            <form action="/newstudent" method="post">
+                  <label for="name">Full Name</label>
+                  <input type="text" name="name" required>
+
+                  <label for="email">Email</label>
+                  <input type="text" name="email" required>
+
+                  <label for="phone">Phone</label>
+                  <input type="text" name="phone" required>
+
+                  <label for="dob">Date of Birth</label>
+                  <input type="date" name="dob" required>
+
+                  <button class="save-bttn">Save</button>
+            </form>
+      </div>
+ </div>
+  <div class="modal-container hidden" id="edit-student">
+      <div class="edit-student-modal">
+            <h2>Edit Student details</h2>
+            <form action="/editdetails" method="post">
+                  <label for="name">Full Name</label>
+                  <input type="text" name="name" required>
+
+                  <label for="email">Email</label>
+                  <input type="text" name="email" required>
+
+                  <label for="phone">Phone</label>
+                  <input type="text" name="phone" required>
+
+                  <label for="dob">Date of Birth</label>
+                  <input type="date" name="dob" required>
+
+                  <button class="save-bttn">Save</button>
+            </form>
+      </div>
+ </div>
+
+ <div class="modal-contianer hidden" id="confirm">
+      <div class="confirmation-modal">
+           <div class="header">
+            <h2>Confirm Delete</h2>
+           </div>
+            <div class="delete-body">
+                  <p>Are you sure you want to delete studenet <%=  %></p>
+                  <button class="cancel">cancel</button>
+                  <form action="/delete" method="post">
+                        <button class="delete">Delete</button>
+                  </form>
+            </div>
+      </div>
+</div>  
+
+
+<script>
+      
+       const spanContainers = document.querySelectorAll(".span-container")
+
+      
+     // function toggleModal(modalId) {
+     //   document.getElementById().classList.toggle("hidden")  
+     // }
+
+      function fillInfo(button) {
+            spanContainers.forEach(container => {
+                  let containerName = container.id
+                  console.log(containerName)
+                  console.log(button.dataset[containerName])
+                  container.innerText = button.dataset[containerName]
+            });
+      }
+      
+      function toggleModal(panel) {
+            document.getElementById(panel).classList.toggle("hidden")
+      }
+      
+      const viewBttns = document.getElementsByClassName("more-details");
+      
+      
+      
+      [...viewBttns].forEach(bttn => {
+          bttn.addEventListener("click", function() {
+            fillInfo(this);
+          })  
+      });
+
+      
+</script>
+</body>
+</html>
