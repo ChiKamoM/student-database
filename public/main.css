@@ -9,9 +9,25 @@ body{
 }
 .head {
       border-bottom: 1px solid black;
+      height:70px;
+      display:flex;
+      justify-content:space-between;
+      aling-items:center;
+      padding:0px 20px;
+      
 }
-.row1 {
-      border-top: 1px solid;
+.new-student{
+  height:30px;
+  background-color:white;
+  margin-top:18px;  
+}
+.search-bar{
+  height:25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+.row *{
+  
 }
 form {
       border: none;
@@ -24,13 +40,52 @@ form {
 }
 .row{
       display: grid;
-      grid-template-columns:80px 110px 160px auto;
+      grid-template-columns:0.15fr 0.23fr 0.3fr 0.23fr;
+      align-items:center;
       border: 1px solid black;
+      min-width:80%;
 }
-.row div {
-      border-left: 1px solid black;
+.row p{
+  padding-left:15px;
+}
+.header-row{
+  background-color:#ececec;
+}
+.actions{
+  display:flex;
+  justify-content:space-between;
+}
+.actions button{
+  border:none;
+  font-size:16px;
+  background-color:white;
+}
+.actions button:hover{
+  cursor:pointer;
 }
 
-.hidden{
+.student-table {
+  margin-bottom: 40px;
+}
+
+.details-modal{
+  width: 400px;
+}
+.student-details-head{
+  border:1px solid black;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+}
+.student-details-head button{
+  font-size:16px;
+  height:25px;
+  background-color:white;
+  border:none;
+  text-decoration:underline;
+}
+
+ hidden{
       display:none ;
 }

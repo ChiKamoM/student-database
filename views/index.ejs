@@ -20,7 +20,7 @@
       </form>
       <div class="student-table">
             
-            <div class="row">
+            <div class="row header-row">
                   <div class="id-col">
                         <p>iD</p>
                   </div>
@@ -40,13 +40,14 @@
             <% students.forEach(student => { %>
                   <div class="row">
                         <div class="id">
-                              <%= student.id %>
+                             <p> <%= student.id %> </p>
                         </div>
                         <div class="name">
-                              <%= student.name %>
+                             <p>  <%= student.name %> </p>
+
                         </div>
                         <div class="email">
-                              <%= student.email %>
+                           <p>   <%= student.email %></p>
                         </div>
                         <div method="post" class="actions">
                               <button id="view<%=student.id%>" class="details" 
@@ -75,7 +76,10 @@
 
  <div class="modal-container" id="details">
       <div class="details-modal">
-            <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
+            <div class="student-details-head">
+                  <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
+            </div>
+            
           <div class="student-details">
             
              <ul>
@@ -152,9 +156,6 @@
        const spanContainers = document.querySelectorAll(".span-container")
 
       
-     // function toggleModal(modalId) {
-     //   document.getElementById().classList.toggle("hidden")  
-     // }
 
       function fillInfo(button) {
             spanContainers.forEach(container => {
