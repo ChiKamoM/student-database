@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mysql from 'mysql2/promise';
+ 
 
 
 const app = express();
@@ -16,18 +17,19 @@ const pool = mysql.createPool({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"))
 
-let stdntIndx = 0;
 
-function findIndex(id) {
-  
-}
+
 
 let students
 
- try {
+ 
+
+app.get("/", async (req,res)=>{
+
+  try {
     const connection = await pool.getConnection();
 
-    const sql = 'select * FROM students order by id ';
+    const sql = 'SELECT *, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students order by id ';
     const [rows] = await connection.execute(sql);
     students = rows;       
     connection.release();
@@ -35,21 +37,12 @@ let students
     console.log(err) 
   }
 
-app.get("/", async (req,res)=>{
   res.render("index.ejs",{
-    students:students,
-    indx:stdntIndx
+    students:students
   })
 })
 
-app.post("/details/:id",(req,res)=>{
-  let details
 
-  res.render("index.ejs",{students:students,
-    details:details,
-    indx:stdntIndx
-  })
-})
 
 
 
@@ -139,38 +132,26 @@ app.post("/delete/:id", async (req,res)=>{
   res.redirect("/")
 })
 
-app.post("/edit/:id", async (req,res)=>{
-  const id = req.params.id;
-  let student
 
-  try {
-    const connection = await pool.getConnection()
-    const result = await 'select * from students where id = ?';
-    const values = [id];
-    const [rows] = await connection.execute(result,values);
-    student = rows[0] 
-  } catch (error) {
-    console.log(error);
-  }
-console.log(student)
-  res.render("manage.ejs", {student:student})
-})
+app.post("/editDetails", async (req,res)=>{
+  const id = req.body.id;
 
-app.post("/update/:id", async (req,res)=>{
-  const id = req.params.id;
-
+   console.log(`id is ${id}`);
    try {   
     const connection = await pool.getConnection()
     let result = await 'select * from students where id = ?';
     let values = [id];
     let [rows] = await connection.execute(result,values);
     const oldRecord = rows[0]
+       console.log(oldRecord);
+       console.log(req.body)
 
       const sql = 'UPDATE students SET `name` = ?, `email` = ? WHERE `id` = ? LIMIT 1';
       const values1 = [
         req.body.name || oldRecord.name,
         req.body.email ||oldRecord.email,
-        id
+        req.body.phone ||oldRecord.phone,
+        req.body.dob ||oldRecord.DOB
         ];
         [result] = await connection.execute(sql, values1);
 
@@ -183,9 +164,9 @@ app.post("/update/:id", async (req,res)=>{
     const updatedRecord = rows[0]
     console.log(updatedRecord)
 
-      } catch (error) {
-    console.log(error)
-  }
+       } catch (error) {
+     console.log(error)
+   }
 
 try {
     const connection = await pool.getConnection();

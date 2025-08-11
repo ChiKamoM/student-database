@@ -54,16 +54,23 @@
                                    
                               data-name="<%= student.name %>" 
                               data-email="<%= student.email %>"
-                              data-phone=" <%= student.phone %>"
+                              data-phone="<%= student.phone %>"
                               data-id="<%= student.id %>"
-                              data-dob=" <%= student.id %>">
+                              data-dob="<%= student.DOB %>">
                               
                                     View
                               </button>
-                              <button id="edit"  class="action">
+                              <button id="edit"  class="edit"
+                               
+                              data-email="<%= student.email %>"
+                              data-phone="<%= student.phone %>"
+                              data-id="<%= student.id %>"
+                              data-dob="<%= student.DOB %>"
+                              >
                                     Edit
                               </button>
-                              <button id="delete"  class="action">
+                              <button id="delete"  class="delete"
+                              data-name="<%= student.name %>">
                                     Delete
                               </button>
                         </form>
@@ -74,27 +81,7 @@
  </div>
 
 
- <div class="modal-container" id="details">
-      <div class="details-modal">
-            <div class="student-details-head">
-                  <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
-            </div>
-            
-          <div class="student-details">
-            
-             <ul>
-                  <li><span>ID:</span><span class="span-container" id="id"></span></li>
-                  <li><span>Name:</span> <span class="span-container" id="name"></span> </li>
-                  <li><span>Email:</span> <span class="span-container" id="email"></span> </li>
-                  <li><span>Phone:</span> <span class="span-container" id="phone"></span> </li>
-                  <li><span>DOB:</span> <span class="span-container" id="dob"></span> </li>
-             </ul>
-       </div>
-      </div>
-
- </div>
-
- <div class="modal-container hidden" id="new-student">
+  <div class="modal-container hidden" id="new-student">
       <div class="new-student-modal">
             <h2>Add New Student</h2>
             <form action="/newstudent" method="post">
@@ -114,36 +101,62 @@
             </form>
       </div>
  </div>
-  <div class="modal-container hidden" id="edit-student">
+
+
+ <div class="modal-container hidden" id="details">
+      <div class="details-modal">
+            <div class="student-details-head">
+                  <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
+            </div>
+            
+          <div class="student-details">
+            
+             <ul>
+                  <li><span>ID:</span><span class="span-container" id="id"></span></li>
+                  <li><span>Name:</span> <span class="span-container" id="name"></span> </li>
+                  <li><span>Email:</span> <span class="span-container" id="email"></span> </li>
+                  <li><span>Phone:</span> <span class="span-container" id="phone"></span> </li>
+                  <li><span>DOB:</span> <span class="span-container" id="dob"></span> </li>
+             </ul>
+       </div>
+      </div>
+
+ </div>
+
+
+  <div class="modal-container hidden " id="edit-student">
       <div class="edit-student-modal">
             <h2>Edit Student details</h2>
-            <form action="/editdetails" method="post">
+            <form action="/editDetails" method="post" id="edit-student-form">
                   <label for="name">Full Name</label>
-                  <input type="text" name="name" required>
+                  <input type="text" name="name" id="edit-name" required>
 
                   <label for="email">Email</label>
-                  <input type="text" name="email" required>
+                  <input type="text" name="email" id="edit-email" required>
 
                   <label for="phone">Phone</label>
-                  <input type="text" name="phone" required>
+                  <input type="text" name="phone" id="edit-phone" required>
 
                   <label for="dob">Date of Birth</label>
-                  <input type="date" name="dob" required>
+                  <input type="date" name="dob" id="edit-dob" required>
+
+                  <input type="hidden" id="record-id" name="id">
 
                   <button class="save-bttn">Save</button>
             </form>
       </div>
  </div>
 
- <div class="modal-contianer hidden" id="confirm">
+ <div class="modal-contianer hidden" id="delete-student">
       <div class="confirmation-modal">
            <div class="header">
             <h2>Confirm Delete</h2>
            </div>
             <div class="delete-body">
-                  <p>Are you sure you want to delete studenet <%=  %></p>
+                  <p>Are you sure you want to delete student - <span id="delete-student-name"></span></p>
                   <button class="cancel">cancel</button>
                   <form action="/delete" method="post">
+                        <input type="hidden" name="id" id="deleteId">
                         <button class="delete">Delete</button>
                   </form>
             </div>
@@ -153,32 +166,83 @@
 
 <script>
       
-       const spanContainers = document.querySelectorAll(".span-container")
+      const spanContainers = document.querySelectorAll(".span-container");
+      const deleteStdntName = document.getElementById("delete-student-name");
 
+
+      let dateInpt = document.getElementById("edit-dob");
+      let nameInpt = document.getElementById("edit-name");
+      let emailInpt = document.getElementById("edit-email");
+      let phoneInpt = document.getElementById("edit-phone");
+      let idInpt = document.getElementById("record-id")
+
+      const viewBttnsCollection = document.getElementsByClassName("details");
+      const editBttnsCollection = document.getElementsByClassName("edit");
+      const deleteBttnsCollection = document.getElementsByClassName("delete");
       
+      const viewBttns = Array.from(viewBttnsCollection);
+      const editBttns = Array.from(editBttnsCollection);
+      const deleteBttns = Array.from(deleteBttnsCollection);
+
+
+      const newStdntModal = document.getElementById("new-student");
+      const editStdntModal = document.getElementById("edit-student");
+      const deleteStdntModal = document.getElementById("delete-student");
+      const stdntDetailsModal = document.getElementById("details");
+
 
       function fillInfo(button) {
             spanContainers.forEach(container => {
-                  let containerName = container.id
-                  console.log(containerName)
-                  console.log(button.dataset[containerName])
-                  container.innerText = button.dataset[containerName]
+                  let containerName = container.id;
+                  console.log(containerName);
+                  console.log(button.dataset[containerName]);
+                  container.innerText = button.dataset[containerName];
             });
+      };
+
+      function fillInput(button) {
+            dateInpt.value = button.dataset[dateInpt.name];
+            nameInpt.value = button.dataset[nameInpt.name];
+            emailInpt.value = button.dataset[emailInpt.name];
+            phoneInpt.value = button.dataset[phoneInpt.name];
+            idInpt.value = button.dataset.id;
+            console.log(`id is ${idInpt.value}`)
+      };
+
+      function fillName(button) {
+            deleteStdntName.innerText = button.dataset.name
+      
       }
       
       function toggleModal(panel) {
-            document.getElementById(panel).classList.toggle("hidden")
+            panel.classList.toggle("hidden")
       }
       
-      const viewBttns = document.getElementsByClassName("more-details");
       
       
-      
-      [...viewBttns].forEach(bttn => {
+      viewBttns.forEach(bttn => {
           bttn.addEventListener("click", function() {
+            console.log(viewBttnsCollection.className)
             fillInfo(this);
+            toggleModal(stdntDetailsModal);
           })  
       });
+
+      editBttns.forEach(bttn =>{
+            bttn.addEventListener("click", function() {
+                  fillInput(this);
+                  toggleModal(editStdntModal);
+            })
+      })
+      
+      deleteBttns.forEach(bttn => {
+            bttn.addEventListener("click", function() {
+                  
+                  fillName(this);
+
+                  toggleModal(deleteStdntModal);
+            })
+      })
 
       
 </script>
