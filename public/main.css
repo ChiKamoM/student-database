@@ -5,7 +5,7 @@ body{
 }
 
 
-.options-container, .details-modal, .new-student-modal, .edit-student-modal, .confirmation-modal {
+.options-container {
       border: solid 1px black;
       background-color: white;
 }
@@ -32,17 +32,18 @@ body{
 form {
       border: none;
 }
-
+.student-table, .search-bar{
+ margin-left: 1.5rem;
+}
 .student-table{
       width: 90%;
       border: 1px solid black;
-      margin: auto;
 }
 .row{
       display: grid;
       grid-template-columns:0.15fr 0.23fr 0.3fr 0.23fr;
       align-items:center;
-      border: 1px solid black;
+      border: none;
       min-width:80%;
 }
 .row p{
@@ -85,7 +86,78 @@ form {
   border:none;
   text-decoration:underline;
 }
+button:hover{
+  cursor: pointer;
+}
 
  .hidden{
       display:none ;
+}
+.modal-container{
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0,0,0, 0.4);
+}
+.modal{
+  background-color: #fefefe;
+  border: 1px inset rgb(98, 97, 97);
+  margin: 15% auto;
+  height:min-content;
+  max-width: 300px;
+}
+
+.foot{
+  display: flex;
+  justify-content: flex-end;
+}
+.delete-header{
+  border-bottom: 1px solid black;
+  padding: 5px 10px;
+}
+.delete-body{
+  margin: 10px;
+}
+
+.confirm-delete{
+  font-size: 16px;
+  padding: 5px;
+  margin: 5px;
+  background-color: white;
+}
+.delete{
+  background-color: rgb(204, 204, 204);
+}
+.edit-details{
+  width: 250px;
+  height: 25px;
+  margin-bottom: 15px;
+}
+
+#edit-student-form{
+  display: flex;
+  flex-direction: column;
+
+}
+
+#edit-student-form * {
+  margin-left: 10px;
+}
+
+.save-bttn{
+  font-size: 16px;
+  padding: 5px;
+  margin: 5px;
+  background-color: white;
+  width: min-content;
+  align-self: flex-end;
+}
+
+.edit-head{
+  border-bottom: 1px solid black;
+  padding: 5px 10px;
 }

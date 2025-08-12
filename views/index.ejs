@@ -8,16 +8,15 @@
 </head>
 <body>
 
-      
- <div class="options-container">
+<div class="options-container">
 
       <div class="head">
             <h2>Student Management</h2> 
-            <button class="new-student">Add New Student</button>
+            <button class="new-student" id="add-new-student">Add New Student</button>
       </div>
-      <form action="/search" class="search">
-            <input type="text" class="search-bar">
-      </form>
+      
+            <input type="search" class="search-bar" id="search-bar">
+      
       <div class="student-table">
             
             <div class="row header-row">
@@ -40,7 +39,7 @@
             <% students.forEach(student => { %>
                   <div class="row">
                         <div class="id">
-                             <p> <%= student.id %> </p>
+                             <p> <%= student.uuid %> </p>
                         </div>
                         <div class="name">
                              <p>  <%= student.name %> </p>
@@ -50,39 +49,42 @@
                            <p>   <%= student.email %></p>
                         </div>
                         <div method="post" class="actions">
-                              <button id="view<%=student.id%>" class="details" 
+                              <button id="view<%=student.uuid%>" class="details" 
                                    
                               data-name="<%= student.name %>" 
                               data-email="<%= student.email %>"
                               data-phone="<%= student.phone %>"
-                              data-id="<%= student.id %>"
+                              data-id="<%= student.uuid %>"
                               data-dob="<%= student.DOB %>">
                               
                                     View
                               </button>
                               <button id="edit"  class="edit"
-                               
+                              data-name="<%= student.name %>"  
                               data-email="<%= student.email %>"
                               data-phone="<%= student.phone %>"
-                              data-id="<%= student.id %>"
+                              data-id="<%= student.uuid %>"
                               data-dob="<%= student.DOB %>"
                               >
                                     Edit
                               </button>
                               <button id="delete"  class="delete"
-                              data-name="<%= student.name %>">
-                                    Delete
-                              </button>
-                        </form>
+                                    data-name="<%= student.name %>"
+                                    data-id="<%= student.uuid %>"
+                               >
+                                          Delete
+                                    </button>
+                              </form>
+                        </div>
                   </div>
             <% }) %>
       </div>      
       
- </div>
+</div>
 
 
   <div class="modal-container hidden" id="new-student">
-      <div class="new-student-modal">
+      <div class="modal">
             <h2>Add New Student</h2>
             <form action="/newstudent" method="post">
                   <label for="name">Full Name</label>
@@ -104,7 +106,7 @@
 
 
  <div class="modal-container hidden" id="details">
-      <div class="details-modal">
+      <div class="modal">
             <div class="student-details-head">
                   <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
             </div>
@@ -125,40 +127,47 @@
 
 
   <div class="modal-container hidden " id="edit-student">
-      <div class="edit-student-modal">
-            <h2>Edit Student details</h2>
+      <div class="modal">
+            <div class="edit-head">
+                  <h2>Edit Student details</h2>
+            </div>
+            
             <form action="/editDetails" method="post" id="edit-student-form">
                   <label for="name">Full Name</label>
-                  <input type="text" name="name" id="edit-name" required>
+                  <input class="edit-details" type="text" name="name" id="edit-name" >
 
                   <label for="email">Email</label>
-                  <input type="text" name="email" id="edit-email" required>
+                  <input class="edit-details" type="text" name="email" id="edit-email" >
 
                   <label for="phone">Phone</label>
-                  <input type="text" name="phone" id="edit-phone" required>
+                  <input class="edit-details" type="text" name="phone" id="edit-phone" >
 
                   <label for="dob">Date of Birth</label>
-                  <input type="date" name="dob" id="edit-dob" required>
+                  <input class="edit-details" type="date" name="dob" id="edit-dob">
 
-                  <input type="hidden" id="record-id" name="id">
+                  <input  type="hidden" id="record-id" name="id">
 
                   <button class="save-bttn">Save</button>
             </form>
       </div>
  </div>
 
- <div class="modal-contianer hidden" id="delete-student">
-      <div class="confirmation-modal">
-           <div class="header">
+ <div class="modal-container hidden" id="delete-student">
+      <div class="modal">
+           <div class="delete-header">
             <h2>Confirm Delete</h2>
            </div>
             <div class="delete-body">
                   <p>Are you sure you want to delete student - <span id="delete-student-name"></span></p>
-                  <button class="cancel">cancel</button>
-                  <form action="/delete" method="post">
-                        <input type="hidden" name="id" id="deleteId">
-                        <button class="delete">Delete</button>
-                  </form>
+                  
+                  <div class="foot">
+                        <button  id="cancel" class="confirm-delete">Cancel</button>
+                        <form action="/delete" method="post">
+                              <input type="hidden" name="id" id="delete-id" value="">
+                              <button type="submit" class="confirm-delete delete">Delete</button>
+                        </form>
+                  </div>
+                  
             </div>
       </div>
 </div>  
@@ -179,16 +188,30 @@
       const viewBttnsCollection = document.getElementsByClassName("details");
       const editBttnsCollection = document.getElementsByClassName("edit");
       const deleteBttnsCollection = document.getElementsByClassName("delete");
+      const searchBar = document.getElementById("search-bar");
       
       const viewBttns = Array.from(viewBttnsCollection);
       const editBttns = Array.from(editBttnsCollection);
       const deleteBttns = Array.from(deleteBttnsCollection);
+      const newBttn = document.getElementById("add-new-student")
+      const closeStdntDtls = document.getElementById("close-modal")
+      const cancelDelete = document.getElementById("cancel")
 
 
       const newStdntModal = document.getElementById("new-student");
       const editStdntModal = document.getElementById("edit-student");
       const deleteStdntModal = document.getElementById("delete-student");
       const stdntDetailsModal = document.getElementById("details");
+      const deleteStdntInpt = document.getElementById("delete-id");
+
+      searchBar.addEventListener('search', function () {
+            viewBttns.forEach(bttn => {
+                  if (bttn.dataset.name == this.value) {
+                        fillInfo(bttn);
+                        toggleModal(stdntDetailsModal);
+                  }
+            });
+      })
 
 
       function fillInfo(button) {
@@ -201,28 +224,31 @@
       };
 
       function fillInput(button) {
+            console.log(button)
+            console.log(button.dataset)
             dateInpt.value = button.dataset[dateInpt.name];
             nameInpt.value = button.dataset[nameInpt.name];
             emailInpt.value = button.dataset[emailInpt.name];
             phoneInpt.value = button.dataset[phoneInpt.name];
             idInpt.value = button.dataset.id;
-            console.log(`id is ${idInpt.value}`)
       };
 
-      function fillName(button) {
-            deleteStdntName.innerText = button.dataset.name
-      
+      function fillDelete(button) {
+            deleteStdntName.innerText = button.dataset.name;
+            deleteStdntInpt.value = button.dataset.id
+            console.log(deleteStdntInpt.value)
       }
       
       function toggleModal(panel) {
-            panel.classList.toggle("hidden")
+            panel.classList.remove("hidden")
       }
       
-      
+      function closeModal(modal) {
+            modal.classList.add("hidden")
+      }   
       
       viewBttns.forEach(bttn => {
           bttn.addEventListener("click", function() {
-            console.log(viewBttnsCollection.className)
             fillInfo(this);
             toggleModal(stdntDetailsModal);
           })  
@@ -238,13 +264,24 @@
       deleteBttns.forEach(bttn => {
             bttn.addEventListener("click", function() {
                   
-                  fillName(this);
+                  fillDelete(this);
 
                   toggleModal(deleteStdntModal);
             })
       })
 
-      
+      newBttn.addEventListener("click", function () {
+            toggleModal(newStdntModal);
+      })  
+
+      closeStdntDtls.addEventListener("click", () =>{
+            closeModal(stdntDetailsModal);
+      })
+
+      cancelDelete.addEventListener("click", ()=>{
+            closeModal(deleteStdntModal);
+      })
+
 </script>
 </body>
 </html>
