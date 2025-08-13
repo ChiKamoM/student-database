@@ -46,7 +46,7 @@ app.get("/", async (req,res)=>{
 
 app.post("/newStudent", async (req,res)=>{
   
-  let uid = uuidv4().slice(0,3);
+  let uid = uuidv4().slice(0,10);
 
 
   try {
