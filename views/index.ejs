@@ -114,11 +114,11 @@
  <div class="modal-container hidden" id="details">
       <div class="modal">
             <div class="student-details-head">
-                  <h2>Student Details</h2> <button id="close-modal" >Back to list</button>
+                  <h2>Student Details</h2> <button id="close-modal" class="back-to-list" >Back to list</button>
             </div>
             
           <div class="student-details">
-            
+            <button id="close-modal" class="back-to-list">Back to list</button>
              <ul class="details-list">
                   <li><span>ID:</span><span class="span-container" id="id"></span></li>
                   <li><span>Name:</span> <span class="span-container" id="name"></span> </li>
@@ -133,7 +133,7 @@
 
 
   <div class="modal-container hidden " id="edit-student">
-      <div class="modal m">
+      <div class="modal ">
             <div class="new-student-head">
                   <h2 class="new-student-title">Edit Student details</h2>
             </div>
@@ -194,15 +194,16 @@
       const viewBttnsCollection = document.getElementsByClassName("details");
       const editBttnsCollection = document.getElementsByClassName("edit");
       const deleteBttnsCollection = document.getElementsByClassName("delete");
-      const rowsCollection = document.getElementsByClassName("row")
+      const rowsCollection = document.getElementsByClassName("row");
       const searchBar = document.getElementById("search-bar");
+      const closeStdntDtlsCollection = document.getElementsByClassName("back-to-list")
       
       const viewBttns = Array.from(viewBttnsCollection);
       const editBttns = Array.from(editBttnsCollection);
       const deleteBttns = Array.from(deleteBttnsCollection);
       const rows = Array.from(rowsCollection);
       const newBttn = document.getElementById("add-new-student");
-      const closeStdntDtls = document.getElementById("close-modal");
+      const closeStdntDtls = Array.from(closeStdntDtlsCollection);
       const cancelDelete = document.getElementById("cancel")
       let checkbox= document.getElementById("checkbox")
 
@@ -218,7 +219,6 @@
 
       function handleSubmit(event) {
             event.preventDefault(); 
-            console.log("Form submitted without page refresh!");
             if (checkbox.checked) {
 
                   const search = searchBar.value;
@@ -231,22 +231,17 @@
                         if (row != searchedRow) {
                         row.classList.add("hidden")
                   }
-            })
-                        } else {
-                              alert("No record with that UUID")
-                        }
-                  
+            })} else {
+                       alert("No record with that UUID")
+                     }
             } else {
-             console.log("checkbox is unchecked") 
                  rows.forEach((row) => {
                   row.classList.remove("hidden")
             })
             }
         }
 
-     
-
-      function fillInfo(button) {
+        function fillInfo(button) {
             spanContainers.forEach(container => {
                   let containerName = container.id;
                   console.log(containerName);
@@ -306,9 +301,11 @@
             toggleModal(newStdntModal);
       })  
 
-      closeStdntDtls.addEventListener("click", () =>{
-            closeModal(stdntDetailsModal);
-      })
+      closeStdntDtls.forEach(bttn => {
+            bttn.addEventListener("click", () =>{
+                  closeModal(stdntDetailsModal);
+            })
+      });
 
       cancelDelete.addEventListener("click", ()=>{
             closeModal(deleteStdntModal);

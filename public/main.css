@@ -10,7 +10,7 @@ body{
 .options-container {
       border: solid 1px black;
       background-color: white;
-      width: 70vw;
+      width: 680px;
       margin: auto;
 }
 .head {
@@ -24,42 +24,44 @@ body{
 }
 .add-new-student{
   height:30px;
-  background-color:white;
-  margin-top:18px;  
+  background-color:white; 
 }
 
 
 form {
       border: none;
 }
-.student-table, .search-bar{
- margin-left: 1.5rem;
-}
+
 .student-table{
       width: 90%;
       border: 1px solid black;
+      margin: auto;
 }
 .row{
       display: grid;
-      grid-template-columns:0.15fr 0.23fr 0.3fr 0.23fr;
+      grid-template-columns:0.17fr 0.25fr 0.3fr 0.27fr;
       align-items:center;
       border: none;
-      min-width:80%;
+      min-width:100%;
 }
 .row p{
   padding-left:15px;
 }
+.row *{
+  font-size: 18px;
+}
 .header-row{
   background-color:#ececec;
   display: grid;
-      grid-template-columns:0.15fr 0.23fr 0.3fr 0.23fr;
-      align-items:center;
-      border: none;
-      min-width:80%;
-    }
+  grid-template-columns:0.17fr 0.25fr 0.3fr 0.27fr;
+  align-items:center;
+  border: none;
+  min-width:80%;
+  }
 
 .header-row p{
   padding-left: 15px;
+  font-weight: 700;
 }
 .actions{
   display:flex;
@@ -94,12 +96,25 @@ h2{
   align-items:center;
   padding:0 20px;
 }
-.student-details-head button{
-  font-size:16px;
+.back-to-list{
+  font-size:20px;
   height:25px;
   background-color:white;
   border:none;
   text-decoration:underline;
+}
+.student-details{
+  display: flex;
+  flex-direction: column;
+}
+.student-details > *{
+  margin-left: 20px;
+}
+.student-details .back-to-list {
+  width: fit-content;
+  padding: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .details-modal{
   background-color: #fefefe;
@@ -109,19 +124,19 @@ h2{
   max-width: 300px;
 }
 .details-list{
-  display:flex;
   flex-direction:column;
-  justify-content:space-between;
-  height:250px;
+  height:fit-content;
+  width:fit-content;
+  padding: 0;
 }
 .details-list *{
   font-size:20px;
   list-style:none;
   width:100%;
 }
-
 .details-list li{
   width:100%;
+  margin-bottom: 10px;
   display:grid;
   grid-template-columns:0.3fr 1fr;
 }
@@ -134,8 +149,8 @@ button:hover{
   cursor: pointer;
 }
 
- .hidden{
-      display:none ;
+.hidden{
+   display:none;
 }
 .modal-container{
   position: fixed;
@@ -151,8 +166,7 @@ button:hover{
   background-color: #fefefe;
   border: 1px inset rgb(98, 97, 97);
   margin: 15% auto;
-  height:min-content;
-  max-width: 300px;
+  width: fit-content;
 }
 
 .foot{
@@ -185,29 +199,27 @@ button:hover{
 .add-bttn{
   font-size: 16px;
   padding: 5px;
-  margin: 5px;
+  margin-top:15px;
   background-color: white;
-  width: min-content;
   align-self: flex-end;
-  position:absolute;
-  bottom:0;
+  width: 60px;
+  border: 1px solid black;
 }
 .new-student-form{
   display:flex;
   flex-direction:column;
-  margin-left:10px;
-  height:320px;
+  margin: 10px 20px;
   position:relative;
 }
 
 .new-student-form input{
-  width:150px;
   height:25px;
   
 }
 .new-student-form label{
   font-size:17px;
   margin-top:20px;
+  margin-bottom: 5px;
 }
 .new-student-head{
   border-bottom: 1px solid black;
@@ -219,7 +231,6 @@ button:hover{
 }
 .new-student{
   width:300px;
-  height:400px;
 }
 
 
@@ -227,8 +238,8 @@ button:hover{
 
 .checkbox-round {
     padding: 2px;
-    width: 1.3em;
-    height: 1.3em;
+    width: 15px;
+    height: 15px;
     background-color: white;
     border-radius: 50%;
     vertical-align: middle;
@@ -250,16 +261,20 @@ button:hover{
   margin-bottom:20px;
   padding-left: 24px;
   margin-top:20px;
-  margin-left: 20px;
   z-index: 0;
 }
 .checkbox-round{
-  margin-left: 20px;
   position: absolute;
   left: 5px;
-  top: 22px;
+  top: 25px;
   z-index: 5;
 }
 .search-form{
   position: relative;
+  width: fit-content;
+  margin-left: 33px;
+}
+
+#edit-student .modal {
+  width: 240px;
 }
