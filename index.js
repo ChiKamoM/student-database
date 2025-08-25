@@ -2,16 +2,17 @@ import express from "express";
 import bodyParser from "body-parser";
 import mysql from 'mysql2/promise';
 import { v4 as uuidv4 } from 'uuid'; 
-
+import 'dotenv/config';
 
 const app = express();
 const port = 3000;
 const pool = mysql.createPool({
-  host:'localhost',
-  user:'root',
-  database:'mydatabase',
-  password:'justmondlisok'
+  host:process.env.DATABASE_HOST,
+  user:process.env.DATABASE_USER,
+  database:process.env.DATABASE_NAME,
+  password:process.env.DATABASE_PASSWORD
 });
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"))
@@ -36,7 +37,7 @@ app.get("/", async (req,res)=>{
 
     connection.release();
   } catch (error) {
-    console.log(err) 
+    console.log(error) 
   }
   res.render("index.ejs",{
     students:students
