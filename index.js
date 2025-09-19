@@ -25,23 +25,28 @@ let students
       
  
 
-app.get("/", async (req,res)=>{
+// app.get("/", async (req,res)=>{
 
-  try {
-    const connection = await pool.getConnection();
+//   try {
+//     const connection = await pool.getConnection();
 
-    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students ';
-    const [rows] = await connection.execute(sql);
-    students = rows;
+//     const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students ';
+//     const [rows] = await connection.execute(sql);
+//     students = rows;
      
 
-    connection.release();
-  } catch (error) {
-    console.log(error) 
-  }
-  res.render("index.ejs",{
-    students:students
-  })
+//     connection.release();
+//   } catch (error) {
+//     console.log(error) 
+//   }
+//   res.render("index.ejs",{
+//     students:students
+//   })
+// })
+
+
+app.get("/", async (req,res) =>{
+  res.render("login.ejs")
 })
 
 

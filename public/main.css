@@ -278,3 +278,109 @@ button:hover{
 #edit-student .modal {
   width: 240px;
 }
+
+
+
+
+
+/*----------------------------------------------------------------Register------------------------------------------------------------------------ */
+
+
+.register-container{
+  margin:auto;
+  width: 300px;
+  border: 0.5px solid black;
+  font-size:18px;
+  padding-bottom:15px;
+}
+
+.registration-form{
+  display:flex;
+  flex-direction:column;
+  
+}
+
+.registration-form input{
+  width:220px;
+  height:24px;
+  margin:auto;
+  margin-bottom:10px;
+  border-radius:4px;
+  margin-top:4px;
+}
+
+.registration-form label {
+margin-left:26.4px;
+}
+
+.register-head h2{
+  margin-left:26.4px;
+  font-weight:540;
+}
+
+ button{
+ padding:5px;
+  font-size:16px;
+  font-weight:500;
+  margin-left:auto;
+  margin-right:26.4px;
+  background-color:white;
+  border:1px solid black;
+  border-radius:4px;
+}
+
+.register-footer{
+  display:flex;
+  align-items:center;
+}
+
+.footer-button{
+  height:min-content;
+  position:relative;
+  z-index:1;
+  right: 30px;
+  top: 25px;
+}
+.footer-text{
+  margin-left:24.6px
+}
+
+
+/* ----------------------------------------------Log in------------------------------------------------------------------------ */
+
+
+
+.login-container{
+  border:1px solid black;
+  width:280px;
+  font-family:calibri;
+  padding:15px;
+}
+
+h2{
+  margin-top:0;
+}
+
+.login-form{
+  display:flex;
+  flex-direction:column;
+}
+
+.login-form input{
+  margin-bottom:10px;
+  height:25px;
+  border: 1.5px solid black;
+  border-radius:4px;
+}
+.login-button{
+  background-color:white;
+  border:1px solid black;
+  width:60px;
+  padding:8px 5px;
+  align-self:flex-end;
+  border-radius:4px
+}
+
+.invalid{
+  border:3px solid red;
+}
