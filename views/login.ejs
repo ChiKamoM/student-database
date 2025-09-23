@@ -1,32 +1,6 @@
 <%- include("partials/header.ejs") %>
 
-    <div class="register-container">
-      <header class="register-head">
-        <h2>Registration</h2>
-      </header>
-      <form id="registry-form" class="registration-form" >
-        <label for="name">Full Name</label>
-        <input required name="name" class="" />
-
-        <label for="email">Email</label>
-        <input required name="email" class="" />
-
-        <label for="password">Password</label>
-        <input required name="password" id="login-password" class="" />
-
-        <label for="confirm-password">Retype Passowrd</label>
-        <input class="" id="confirm-password" name="confirm-password" />
-
-        <button>Register</button>
-      </form>
-      <hr />
-      <footer class="register-footer">
-        <p class="footer-text">Already have an account? <br />Log in</p>
-        <button class="footer-button">Sign in</button>
-      </footer>
-    </div>
-
-    <div class="login-container">
+ <div class="login-container">
   <header class="login-header">
     <h2>Login</h2>
   </header>
@@ -40,48 +14,17 @@
     
     <button required class="login-button" >Log in</button>
   </form>
+
+   <hr />
+      <footer class="register-footer">
+        <p class="footer-text">Don't have an account? <br />Log in</p>
+        <form action="/register" method="get">
+            <button class="footer-button">Register</button>
+        </form>
+        
+      </footer>
   
 </div>
-    <script>
-      const passwordInpt = document.getElementById("login-password");
-      const confirmPasswordInpt = document.getElementById("confirm-password");
-      const myForm = document.getElementById("registry-form")
-      let valid = false;
-
-      confirmPasswordInpt.addEventListener("change", () => {
-        if (confirmPasswordInpt.value !== passwordInpt.value) {
-          console.log("Passwords are not the same")
-          confirmPasswordInpt.classList.add("invalid")
-          valid = false;
-          console.log(valid)
-        } else {
-          confirmPasswordInpt.classList.remove("invalid");
-          console.log("Passwords are the same");
-          valid = true;
-        }
-      });
-    
-
-      myForm.addEventListener("submit", function(event){
-        if (valid) {
-          myForm.submit
-        }else{
-          event.preventDefault()
-          alert("Password and retyped password are not the same")
-        }
-      })
-
-      function handleSubmit(event) {
-        if (valid) {
-          event.preventDefault
-        } else {
-          
-        }
-      }
-    
-    </script>
-
-
 
 
 <%- include("partials/footer.ejs") %>

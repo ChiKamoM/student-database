@@ -4,6 +4,7 @@ import mysql from 'mysql2/promise';
 import { v4 as uuidv4 } from 'uuid'; 
 import 'dotenv/config';
 
+
 const app = express();
 const port = 3000;
 const pool = mysql.createPool({
@@ -18,34 +19,70 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"))
 
 
-
+let verified = false;
+let currentUser
 let students
 
+
+
+app.post("/register", async (req,res)=>{
+  const{name,email,password} = req.body;
+  
+  try {
+    const connection = await pool.getConnection();
+    let sql = 'SELECT * FROM users WHERE email = ?'
+    let values = [email];
+    let [rows,fields] = await connection.execute(sql,values);
+    console.log(rows.length)
+    if(rows.length < 1){
+      console.log("user does not exist");
+      sql = 'INSERT INTO users(name,email,password) VALUES(?, ?,?);'
+      values = [name, email,password];
+      [rows] = await connection.execute(sql,values);
+      verified = true
+      res.redirect("/")
+    }else{
+      console.log("user exists")
+    }
+    
+  } catch (error) {
+    console.log(error);
+    res.render("register.ejs")
+  }
+})
 
       
  
 
-// app.get("/", async (req,res)=>{
+app.get("/", async (req,res)=>{
+ if (!verified){
+  res.render("login.ejs")
+ }else{
+   try {
+    const connection = await pool.getConnection();
+    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students ';
+    const [rows] = await connection.execute(sql);
+    students = rows;
+     res.render("index.ejs",{
+    students:students
+  })
 
-//   try {
-//     const connection = await pool.getConnection();
-
-//     const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students ';
-//     const [rows] = await connection.execute(sql);
-//     students = rows;
-     
-
-//     connection.release();
-//   } catch (error) {
-//     console.log(error) 
-//   }
-//   res.render("index.ejs",{
-//     students:students
-//   })
-// })
+    connection.release();
+  } catch (error) {
+    console.log(error) 
+  }
+ }
+ 
+  
+})
 
 
-app.get("/", async (req,res) =>{
+
+app.get("/register", async (req,res) =>{
+  res.render("register.ejs")
+})
+
+app.get("/login", (req,res)=>{
   res.render("login.ejs")
 })
 
