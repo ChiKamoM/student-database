@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mysql from 'mysql2/promise';
 import { v4 as uuidv4 } from 'uuid'; 
 import 'dotenv/config';
+import bcrypt from "bcrypt";
 
 
 const app = express();
@@ -13,6 +14,8 @@ const pool = mysql.createPool({
   database:process.env.DATABASE_NAME,
   password:process.env.DATABASE_PASSWORD
 });
+const saltRounds = 2;
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,43 +28,86 @@ let students
 
 
 
-app.post("/register", async (req,res)=>{
-  const{name,email,password} = req.body;
-  
-  try {
-    const connection = await pool.getConnection();
-    let sql = 'SELECT * FROM users WHERE email = ?'
-    let values = [email];
-    let [rows,fields] = await connection.execute(sql,values);
-    console.log(rows.length)
-    if(rows.length < 1){
-      console.log("user does not exist");
-      sql = 'INSERT INTO users(name,email,password) VALUES(?, ?,?);'
-      values = [name, email,password];
-      [rows] = await connection.execute(sql,values);
-      verified = true
-      res.redirect("/")
-    }else{
-      console.log("user exists")
-    }
-    
-  } catch (error) {
-    console.log(error);
-    res.render("register.ejs")
-  }
+
+app.get("/register", async (req,res) =>{
+  res.render("register.ejs")
 })
 
+app.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const connection = await pool.getConnection();
+
+    let sql = "SELECT * FROM users WHERE email = ?";
+    let values = [email];
+    let [rows] = await connection.execute(sql, values);
+
+    if (rows.length < 1) {
+      const hash = await bcrypt.hash(password, saltRounds);
+
+      console.log(name, email, hash);
+
+      sql = "INSERT INTO users(name, email, password) VALUES(?, ?, ?)";
+      values = [name, email, hash];
+      await connection.execute(sql, values);
+      verified = true;
+      res.redirect("/");
+    } else {
+      console.log("user exists");
+      res.render("login.ejs");
+    }
+
+    connection.release();
+  } catch (error) {
+    console.log(error);
+    res.redirect("/");
+  }
+});
+
+
+
+app.get("/login", (req,res)=>{
+  res.render("login.ejs")
+})
+
+
+app.post("/login", async (req,res)=>{
+  const {loginPassword,email} = req.body;
+
+  try {
+    let sql = "SELECT * FROM users WHERER email = ?";
+    let values = [email];
+    [rows] = await connection.execute(sql,values);
+   
+    if(rows.length > 0) {
+      let {password} = rows[0]
+      console.log(password)
+      const match = await bcrypt.compare(loginPassword,password)
+      if
+    }
+  } catch (error) {
+    console.log(error)
+  }
+  res.send("done")
+})
+
+app.post("/logout", (req,res)=>{
+  verified=false;
+  res.redirect("/")
+})
       
  
 
 app.get("/", async (req,res)=>{
- if (!verified){
+  if (!verified){
   res.render("login.ejs")
  }else{
    try {
     const connection = await pool.getConnection();
-    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students ';
-    const [rows] = await connection.execute(sql);
+    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`student_uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students WHERE user_id = ? ';
+    let values = [currentUser]
+    const [rows] = await connection.execute(sql,values);
     students = rows;
      res.render("index.ejs",{
     students:students
@@ -71,20 +117,9 @@ app.get("/", async (req,res)=>{
   } catch (error) {
     console.log(error) 
   }
- }
- 
-  
+ }  
 })
 
-
-
-app.get("/register", async (req,res) =>{
-  res.render("register.ejs")
-})
-
-app.get("/login", (req,res)=>{
-  res.render("login.ejs")
-})
 
 
 app.post("/newStudent", async (req,res)=>{
@@ -95,8 +130,8 @@ app.post("/newStudent", async (req,res)=>{
   try {
     const connection = await pool.getConnection()
     
-    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `uuid`) VALUES (?, ?, ?, ?,?)';
-    const values = [req.body.name ,req.body.email, req.body.phone, req.body.dob, uid];
+    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `student_uuid`,`user_id`) VALUES (?, ?, ?, ?,?,?)';
+    const values = [req.body.name ,req.body.email, req.body.phone, req.body.dob, uid, currentUser];
 
     const [result, fields] = await connection.query(insert,values);
     console.log(result)
@@ -107,7 +142,7 @@ app.post("/newStudent", async (req,res)=>{
   try {
     const connection = await pool.getConnection();
 
-    const sql = 'select * FROM students order by id ';
+    const sql = 'select * FROM students order by student_id ';
     const [rows] = await connection.execute(sql);
     students = rows;
   } catch (error) {
@@ -122,7 +157,7 @@ app.post("/search", async (req,res)=>{
   const id = req.body.studentId;
   try {
     const connection = await pool.getConnection()
-    const result = await 'select * from students where id = ?';
+    const result = await 'select * from students where student_id = ?';
     const values = [id];
     const [rows] = await connection.execute(result,values);
     students = rows
@@ -144,7 +179,7 @@ app.post("/delete", async (req,res)=>{
    const connection = await pool.getConnection()
    console.log(id)
    
-   const sql = 'DELETE FROM `students` WHERE `uuid` = ? LIMIT 1';
+   const sql = 'DELETE FROM `students` WHERE `student_uuid` = ? LIMIT 1';
    const values = [id];
    const [result] = await connection.execute(sql,values);
    console.log(result);
@@ -161,13 +196,13 @@ app.post("/editDetails", async (req,res)=>{
   const id = req.body.id;
    try {   
     const connection = await pool.getConnection()
-    let result = await 'select * from students where uuid = ?';
+    let result = await 'select * from students where student_uuid = ?';
     let values = [id];
     let [rows] = await connection.execute(result,values);
     let oldRecord = rows[0]
        
 
-       const sql = 'update students set name = ?, email = ?, phone = ?, DOB = ? WHERE uuid = ? LIMIT 1';
+       const sql = 'update students set name = ?, email = ?, phone = ?, DOB = ? WHERE student_uuid = ? LIMIT 1';
        const values1 = [
          req.body.name || oldRecord.name,
          req.body.email ||oldRecord.email,

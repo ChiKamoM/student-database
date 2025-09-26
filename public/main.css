@@ -56,7 +56,7 @@ form {
   grid-template-columns:0.17fr 0.25fr 0.3fr 0.27fr;
   align-items:center;
   border: none;
-  min-width:80%;
+  min-width:100%;
   }
 
 .header-row p{

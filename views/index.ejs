@@ -34,7 +34,7 @@
             <% students.forEach(student => { %>
                   <div class="row">
                         <div class="id">
-                             <p> <%= student.uuid %> </p>
+                             <p> <%= student.student_uuid %> </p>
                         </div>
                         <div class="name">
                              <p>  <%= student.name %> </p>
@@ -44,12 +44,12 @@
                            <p>   <%= student.email %></p>
                         </div>
                         <div method="post" class="actions">
-                              <button id="view<%=student.uuid%>" class="details" 
+                              <button id="view<%=student.student_uuid%>" class="details" 
                                    
                               data-name="<%= student.name %>" 
                               data-email="<%= student.email %>"
                               data-phone="<%= student.phone %>"
-                              data-id="<%= student.uuid %>"
+                              data-id="<%= student.student_uuid %>"
                               data-dob="<%= student.DOB %>">
                               
                                     View
@@ -58,14 +58,14 @@
                               data-name="<%= student.name %>"  
                               data-email="<%= student.email %>"
                               data-phone="<%= student.phone %>"
-                              data-id="<%= student.uuid %>"
+                              data-id="<%= student.student_uuid %>"
                               data-dob="<%= student.DOB %>"
                               >
                                     Edit
                               </button>
                               <button id="delete"  class="delete"
                                     data-name="<%= student.name %>"
-                                    data-id="<%= student.uuid %>"
+                                    data-id="<%= student.student_uuid %>"
                                >
                                           Delete
                                     </button>
@@ -170,6 +170,11 @@
       </div>
 </div>  
 
+<form action="/logout" method="post">
+      <button>
+            Log Out
+      </button>
+</form>
 
 <script>
       
