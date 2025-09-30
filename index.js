@@ -35,6 +35,7 @@ app.get("/register", async (req,res) =>{
 
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
+  let uuid = uuidv4().slice(0,4)
 
   try {
     const connection = await pool.getConnection();
@@ -46,12 +47,16 @@ app.post("/register", async (req, res) => {
     if (rows.length < 1) {
       const hash = await bcrypt.hash(password, saltRounds);
 
-      console.log(name, email, hash);
+      console.log(name, email, hash,uuid);
 
-      sql = "INSERT INTO users(name, email, password) VALUES(?, ?, ?)";
-      values = [name, email, hash];
+      sql = "INSERT INTO users(name, email, password, user_uuid) VALUES(?, ?, ?, ?)";
+      values = [name, email, hash, uuid];
+      console.log(name, email, hash,uuid);
+
       await connection.execute(sql, values);
+      console.log(rows)
       verified = true;
+      currentUser = 1
       res.redirect("/");
     } else {
       console.log("user exists");
@@ -73,23 +78,41 @@ app.get("/login", (req,res)=>{
 
 
 app.post("/login", async (req,res)=>{
-  const {loginPassword,email} = req.body;
+  const loginEmail = req.body.email;
+  const loginPassword = req.body.password
 
   try {
-    let sql = "SELECT * FROM users WHERER email = ?";
-    let values = [email];
-    [rows] = await connection.execute(sql,values);
+    const connection = await pool.getConnection();
+    let sql = "SELECT * FROM users WHERE email = ?";
+    let values = [loginEmail];
+    let [rows] = await connection.execute(sql,values);
    
+
+
     if(rows.length > 0) {
-      let {password} = rows[0]
-      console.log(password)
-      const match = await bcrypt.compare(loginPassword,password)
-      if
+      let {password} = rows[0];     
+      
+      
+      bcrypt.compare(loginPassword, password, (err, result)=> {
+          if(err){ 
+            console.log(err)
+          }else{
+            if(result){
+              verified = true;
+              currentUser = rows[0].user_uuid
+              res.redirect("/")
+            }else{
+              res.send("Incorrect password")
+            }
+          }
+      });      
+    }else{
+      res.send("user does not exist")
     }
   } catch (error) {
     console.log(error)
+    res.redirect("/")
   }
-  res.send("done")
 })
 
 app.post("/logout", (req,res)=>{
@@ -105,7 +128,7 @@ app.get("/", async (req,res)=>{
  }else{
    try {
     const connection = await pool.getConnection();
-    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`student_uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students WHERE user_id = ? ';
+    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`student_uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students WHERE user_uuid = ? ';
     let values = [currentUser]
     const [rows] = await connection.execute(sql,values);
     students = rows;
@@ -130,7 +153,7 @@ app.post("/newStudent", async (req,res)=>{
   try {
     const connection = await pool.getConnection()
     
-    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `student_uuid`,`user_id`) VALUES (?, ?, ?, ?,?,?)';
+    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `student_uuid`,`user_uuid`) VALUES (?, ?, ?, ?,?,?)';
     const values = [req.body.name ,req.body.email, req.body.phone, req.body.dob, uid, currentUser];
 
     const [result, fields] = await connection.query(insert,values);

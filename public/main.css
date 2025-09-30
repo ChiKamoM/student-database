@@ -4,6 +4,7 @@
 
 body{
       background-color: #f5f1f1;
+      height: 100%;
 }
 
 
@@ -383,4 +384,10 @@ h2{
 
 .invalid{
   border:3px solid red;
+}
+
+.logout-form{
+  margin-top: auto;
+  margin-left: auto;
+  width:fit-content;
 }
