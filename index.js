@@ -49,7 +49,7 @@ app.post("/register", async (req, res) => {
 
       console.log(name, email, hash,uuid);
 
-      sql = "INSERT INTO users(name, email, password, user_uuid) VALUES(?, ?, ?, ?)";
+      sql = "INSERT INTO users(name, email, password, uuid) VALUES(?, ?, ?, ?)";
       values = [name, email, hash, uuid];
       console.log(name, email, hash,uuid);
 
@@ -128,7 +128,7 @@ app.get("/", async (req,res)=>{
  }else{
    try {
     const connection = await pool.getConnection();
-    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`student_uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students WHERE user_uuid = ? ';
+    const sql = 'SELECT `DOB`,`name`,`email`,`phone`,`student_uuid`, DATE_FORMAT(DOB, "%Y-%m-%d") as DOB FROM students WHERE user_id = ? ';
     let values = [currentUser]
     const [rows] = await connection.execute(sql,values);
     students = rows;
@@ -153,7 +153,7 @@ app.post("/newStudent", async (req,res)=>{
   try {
     const connection = await pool.getConnection()
     
-    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `student_uuid`,`user_uuid`) VALUES (?, ?, ?, ?,?,?)';
+    const insert = 'INSERT INTO `students` (`name`,`email`,`phone`,`DOB`, `student_uuid`,`user_id`) VALUES (?, ?, ?, ?,?,?)';
     const values = [req.body.name ,req.body.email, req.body.phone, req.body.dob, uid, currentUser];
 
     const [result, fields] = await connection.query(insert,values);
@@ -165,7 +165,7 @@ app.post("/newStudent", async (req,res)=>{
   try {
     const connection = await pool.getConnection();
 
-    const sql = 'select * FROM students order by student_id ';
+    const sql = 'select * FROM students order by id ';
     const [rows] = await connection.execute(sql);
     students = rows;
   } catch (error) {
@@ -180,7 +180,7 @@ app.post("/search", async (req,res)=>{
   const id = req.body.studentId;
   try {
     const connection = await pool.getConnection()
-    const result = await 'select * from students where student_id = ?';
+    const result = await 'select * from students where student_uuid = ?';
     const values = [id];
     const [rows] = await connection.execute(result,values);
     students = rows
